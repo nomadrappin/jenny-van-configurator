@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import {
   BRANDS,
   type Phase,
@@ -110,6 +111,13 @@ export default function Home() {
   const [skipWarnByStep, setSkipWarnByStep] = useState<Record<string, boolean>>({});
 
   const current = STEPS[currentStep];
+  const currentOptions = useMemo(() => {
+    const withIndex = current.options.map((option, idx) => ({ option, idx }));
+    if (current.id === "win") {
+      return withIndex.sort((a, b) => a.option.price - b.option.price);
+    }
+    return withIndex;
+  }, [current]);
   const runningTotal = useMemo(() => getTotal(selections), [selections]);
 
   useEffect(() => {
@@ -381,7 +389,7 @@ export default function Home() {
               )}
 
               <div className="options-grid">
-                {current.options.map((option, idx) => {
+                {currentOptions.map(({ option, idx }) => {
                   const selected = selections[current.id];
                   const isSelected = selected?.idx === idx;
                   const phase = selected?.phase ?? 0;
@@ -404,6 +412,48 @@ export default function Home() {
                         <span className="opt-card-name">{option.label}</span>
                         <span className="opt-card-price">{formatMoney(option.price)}</span>
                       </div>
+
+                      {(option.photoGallery?.length || option.imageUrl) && (
+                        <div className="opt-photo-strip">
+                          {(option.photoGallery ?? [
+                            {
+                              url: option.imageUrl ?? "",
+                              caption: `${option.label} product photo`,
+                            },
+                          ]).map((photo) => (
+                            <figure className="opt-photo-frame" key={`${option.label}-${photo.url}`}>
+                              <Image
+                                className="opt-photo"
+                                src={photo.url}
+                                alt={photo.caption}
+                                width={1400}
+                                height={800}
+                              />
+                              <figcaption className="opt-photo-caption">{photo.caption}</figcaption>
+                            </figure>
+                          ))}
+                        </div>
+                      )}
+
+                      {(option.sourceLinks?.length || option.photoSourceUrl) && (
+                        <div className="opt-source-links">
+                          {(option.sourceLinks ??
+                            [{ label: "View exact product source", url: option.photoSourceUrl! }]).map(
+                            (source) => (
+                              <a
+                                key={`${option.label}-${source.url}`}
+                                className="opt-photo-link"
+                                href={source.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                {source.label}
+                              </a>
+                            ),
+                          )}
+                        </div>
+                      )}
 
                       <p className="opt-card-desc">{option.note}</p>
 

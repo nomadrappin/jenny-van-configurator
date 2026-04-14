@@ -15,6 +15,10 @@ export type Option = {
   price: number;
   brand?: BrandKey;
   recommendation?: "pick" | "value" | "upgrade";
+  imageUrl?: string;
+  photoSourceUrl?: string;
+  sourceLinks?: Array<{ label: string; url: string }>;
+  photoGallery?: Array<{ url: string; caption: string }>;
 };
 
 export type Step = {
@@ -96,14 +100,14 @@ export const STEPS: Step[] = [
         label: "Velit 2000R - 12V battery powered",
         note: "Best value 12V rooftop AC. Easiest install. Has a fan-only mode for mild days. Right-sized for your use.",
         price: 1829,
-        recommendation: "value",
+        recommendation: "pick",
       },
       {
         label: "Dometic RTX 2000 - 12V battery powered",
         brand: "dometic",
         note: "Most proven premium 12V rooftop AC. 10+ years of field use. Best choice if you want the safest established option.",
         price: 2700,
-        recommendation: "pick",
+        recommendation: "upgrade",
       },
       {
         label: "Mabru 12000 - 12V battery powered",
@@ -163,6 +167,11 @@ export const STEPS: Step[] = [
       "You'll be doing video sessions in areas where cell coverage is often nonexistent. Your internet is your connection to clients.",
     options: [
       {
+        label: "No internet setup for now",
+        note: "Use offline workflows or phone hotspot only when available. Can be upgraded later.",
+        price: 0,
+      },
+      {
         label: "Cell signal booster",
         note: "Amplifies existing coverage. Helps in weak signal areas but can't help where there's no signal at all.",
         price: 500,
@@ -172,14 +181,21 @@ export const STEPS: Step[] = [
         brand: "starlink",
         note: "Set up in 30 seconds wherever you park. True satellite coverage in rural areas with no cell signal. $120/month.",
         price: 650,
-        recommendation: "value",
+        recommendation: "pick",
       },
       {
         label: "Starlink - always mounted on roof",
         brand: "starlink",
         note: "Permanently mounted. Connects the moment you park - zero setup ever.",
         price: 820,
-        recommendation: "pick",
+        recommendation: "upgrade",
+      },
+      {
+        label: "Starlink - in-motion setup",
+        brand: "starlink",
+        note: "Stays connected while driving so internet is always available during travel days.",
+        price: 2700,
+        recommendation: "upgrade",
       },
     ],
   },
@@ -220,32 +236,323 @@ export const STEPS: Step[] = [
     section: "Staying Connected",
     question: "Which sliding windows do you want?",
     callout:
-      "AM Auto is our starting recommendation - most popular in van builds, screen included, proven fit. Step up to VWD for a cleaner all-glass look.",
+      "Our recommendation is the VanTek BOTH SLIDE NEW 170 package. These are paired middle-section slider packages: one passenger sliding-door window plus one driver-side forward window (directly across from it).",
     context:
-      "Full-sized sliders cut into each side of the van. Confirmed fit for your 2025 Sprinter 170 high roof. All slide open for ventilation.",
+      "Every option here is slider-only and specific to the Sprinter 170 middle section. Open each card to scroll photos before choosing.",
     options: [
       {
-        label: "AM Auto - slider with built-in screen",
-        note: "Most popular van build window. Tinted glass, slides open, integrated bug screen. Best value - screen already included.",
-        price: 480,
+        label: "AM Auto OEM pair (MS06-R1-HSS P + MS06-L1-HSS P)",
+        note: "Most common OEM-style half-slider pair. Balanced price, proven fit, and integrated screens on both sides.",
+        price: 1290,
+        recommendation: "pick",
+        sourceLinks: [
+          {
+            label: "Passenger sliding door source",
+            url: "https://www.campervan-hq.com/products/am-auto-mercedes-sprinter-passenger-side-sliding-door-half-slider-window-ms06-r1-hss-p",
+          },
+          {
+            label: "Driver forward source",
+            url: "https://www.campervan-hq.com/products/am-auto-mercedes-sprinter-driver-side-forward-half-slider-window-ms06-l1-hss-p",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/d047ac477978.jpg",
+            caption: "Passenger sliding door - AM Auto MS06-R1-HSS P",
+          },
+          {
+            url: "/window-photos/cbe6f47ea924.jpg",
+            caption: "Driver forward - AM Auto MS06-L1-HSS P",
+          },
+        ],
+      },
+      {
+        label: "VWD SES pair (SR101-SES + SL101-SES)",
+        note: "Most budget-friendly VWD pair. Clean look with internal screens on both middle windows.",
+        price: 980,
         recommendation: "value",
+        sourceLinks: [
+          {
+            label: "Passenger SR101-SES source",
+            url: "https://vanwindowsdirect.com/vwd-ses-series-sliding-van-window-sr101-ses/",
+          },
+          {
+            label: "Driver SL101-SES source",
+            url: "https://vanwindowsdirect.com/vwd-ses-series-sliding-van-window-sl101-ses/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/61b9a60229eb.jpg",
+            caption: "Passenger sliding door - VWD SR101-SES",
+          },
+          {
+            url: "/window-photos/54f90cfd6ac4.jpg",
+            caption: "Passenger interior view - VWD SR101-SES",
+          },
+          {
+            url: "/window-photos/d8c5e33e8c01.jpg",
+            caption: "Driver forward - VWD SL101-SES",
+          },
+          {
+            url: "/window-photos/85b1187a16d6.jpg",
+            caption: "Driver interior view - VWD SL101-SES",
+          },
+        ],
       },
       {
-        label: "VWD SE-Series - frameless all-glass",
-        note: "Upgrade option. Cleaner frameless look from the outside. Same tinted glass and integrated screen.",
-        price: 960,
+        label: "VWD SE pair (SR101-SE + SL101-SE)",
+        note: "Popular all-glass style pair with modern exterior look and integrated screens.",
+        price: 1120,
+        recommendation: "value",
+        sourceLinks: [
+          {
+            label: "Passenger SR101-SE source",
+            url: "https://vanwindowsdirect.com/vwd-se-series-sliding-van-window-sr101-se/",
+          },
+          {
+            label: "Driver SL101-SE source",
+            url: "https://vanwindowsdirect.com/vwd-se-series-sliding-van-window-sl101-se/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/652060aaedd6.jpg",
+            caption: "Passenger sliding door - VWD SR101-SE",
+          },
+          {
+            url: "/window-photos/eab0445123ac.jpg",
+            caption: "Passenger close-up - VWD SR101-SE",
+          },
+          {
+            url: "/window-photos/0b4ad67c3ed0.jpg",
+            caption: "Driver forward - VWD SL101-SE",
+          },
+          {
+            url: "/window-photos/b1f12a6baf4e.jpg",
+            caption: "Driver close-up - VWD SL101-SE",
+          },
+        ],
+      },
+      {
+        label: "VWD SL dual-latch pair (SR101-SL + SL101-SL)",
+        note: "Dual-latch version that allows a secure cracked-open position for airflow while parked.",
+        price: 1280,
         recommendation: "upgrade",
+        sourceLinks: [
+          {
+            label: "Passenger SR101-SL source",
+            url: "https://nomadicsupply.com/vwd-sr101-sl-internal-screen-dual-latch-mercedes-sprinter-half-slider-window-passenger-side-forward/",
+          },
+          {
+            label: "Driver SL101-SL source",
+            url: "https://nomadicsupply.com/vwd-sl101-sl-internal-screen-dual-latch-mercedes-sprinter-half-slider-window-driver-side-forward/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/c7093732febe.jpg",
+            caption: "Passenger sliding door - VWD SR101-SL",
+          },
+          {
+            url: "/window-photos/602e81ba94b6.jpg",
+            caption: "Passenger profile - VWD SR101-SL",
+          },
+          {
+            url: "/window-photos/2b6dfce01ed2.jpg",
+            caption: "Driver forward - VWD SL101-SL",
+          },
+          {
+            url: "/window-photos/60439fd350f2.jpg",
+            caption: "Driver profile - VWD SL101-SL",
+          },
+        ],
       },
       {
-        label: "Vantek 2024 Upgraded - slider with screen",
-        note: "European glass from a 16-year specialist. Larger opening, clean exterior seal, integrated screen.",
-        price: 1250,
+        label: "VWD DS double-slider pair (SR101-DS + SL101-DS)",
+        note: "Dual-pane sliders on both sides for maximum cross-ventilation and best visibility options.",
+        price: 1690,
+        recommendation: "upgrade",
+        sourceLinks: [
+          {
+            label: "Passenger SR101-DS source",
+            url: "https://vanwindowsdirect.com/vwd-double-sliding-van-window-sr101-ds/",
+          },
+          {
+            label: "Driver SL101-DS source",
+            url: "https://vanwindowsdirect.com/vwd-double-sliding-van-window-sl101-ds/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/4d69b1bdb94b.jpg",
+            caption: "Passenger sliding door - VWD SR101-DS",
+          },
+          {
+            url: "/window-photos/fb0cc05746fc.jpg",
+            caption: "Passenger interior detail - VWD SR101-DS",
+          },
+          {
+            url: "/window-photos/9dd907bb10ad.jpg",
+            caption: "Driver forward - VWD SL101-DS",
+          },
+          {
+            url: "/window-photos/652e94e30e4d.jpg",
+            caption: "Driver interior detail - VWD SL101-DS",
+          },
+        ],
       },
       {
-        label: "Vantek OEM Flush - with screen",
-        note: "The slider sits completely flush with the outer glass. Looks exactly like a factory window.",
+        label: "Mercedes OEM imported pair",
+        note: "OEM import set with factory appearance and premium hardware feel.",
+        price: 1390,
+        sourceLinks: [
+          {
+            label: "OEM pair source",
+            url: "https://nomadicsupply.com/mercedes-sprinter-oem-sliding-windows/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/4b78c8287b8f.jpeg",
+            caption: "OEM passenger/driver slider set",
+          },
+          {
+            url: "/window-photos/ee0a91176a6e.jpeg",
+            caption: "Installed OEM-style look on Sprinter body",
+          },
+        ],
+      },
+      {
+        label: "Tec Vanlife OEM-style pair",
+        note: "OEM-style half-slider package with flush look and privacy tint emphasis.",
         price: 1850,
         recommendation: "upgrade",
+        sourceLinks: [
+          {
+            label: "Tec Vanlife source",
+            url: "https://tecvanlife.com/products/mercedes-sprinter-oem-style-half-slider-window",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/616541ed7ec7.jpg",
+            caption: "Tec OEM-style half-slider profile",
+          },
+          {
+            url: "/window-photos/9065e0c6fc4a.jpg",
+            caption: "Tec OEM-style detail",
+          },
+        ],
+      },
+      {
+        label: "Backland AMA OEM-style pair",
+        note: "AMA OEM-style slider package sold by Backland Expedition Gear.",
+        price: 1480,
+        sourceLinks: [
+          {
+            label: "Backland source",
+            url: "https://backlandgear.com/en-us/products/window-oem-style",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/1527be2ca194.jpg",
+            caption: "Backland AMA OEM slider set",
+          },
+          {
+            url: "/window-photos/a4ce390e6ca0.jpg",
+            caption: "Backland installed slider look",
+          },
+        ],
+      },
+      {
+        label: "Hybrid: AM Auto passenger + VWD SE driver",
+        note: "Keep AM Auto on the slider door, pair it with VWD SE opposite for cleaner driver-side exterior glass.",
+        price: 1210,
+        sourceLinks: [
+          {
+            label: "AM Auto passenger source",
+            url: "https://www.campervan-hq.com/products/am-auto-mercedes-sprinter-passenger-side-sliding-door-half-slider-window-ms06-r1-hss-p",
+          },
+          {
+            label: "VWD SE driver source",
+            url: "https://vanwindowsdirect.com/vwd-se-series-sliding-van-window-sl101-se/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/d047ac477978.jpg",
+            caption: "Passenger sliding door - AM Auto",
+          },
+          {
+            url: "/window-photos/0b4ad67c3ed0.jpg",
+            caption: "Driver forward - VWD SE",
+          },
+        ],
+      },
+      {
+        label: "Hybrid: VWD SE passenger + AM Auto driver",
+        note: "Use VWD all-glass look on the slider door and AM Auto on the opposite driver side.",
+        price: 1210,
+        sourceLinks: [
+          {
+            label: "VWD SE passenger source",
+            url: "https://vanwindowsdirect.com/vwd-se-series-sliding-van-window-sr101-se/",
+          },
+          {
+            label: "AM Auto driver source",
+            url: "https://www.campervan-hq.com/products/am-auto-mercedes-sprinter-driver-side-forward-half-slider-window-ms06-l1-hss-p",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/652060aaedd6.jpg",
+            caption: "Passenger sliding door - VWD SE",
+          },
+          {
+            url: "/window-photos/cbe6f47ea924.jpg",
+            caption: "Driver forward - AM Auto",
+          },
+        ],
+      },
+      {
+        label: "VanTek BOTH SLIDE NEW 170 package",
+        note: "Exact VanTek pair package for Sprinter 170 middle section (passenger sliding door + driver forward). This is the option Jenny called out.",
+        price: 799,
+        recommendation: "pick",
+        sourceLinks: [
+          {
+            label: "VanTek exact package source",
+            url: "https://vantekglass.com/product/mercedes-sprinter-sliding-windows-2/",
+          },
+        ],
+        photoGallery: [
+          {
+            url: "/window-photos/dbc9e4ccf73c.png",
+            caption: "VanTek package image - BOTH SLIDE NEW 170",
+          },
+          {
+            url: "/window-photos/c2971d659504.jpg",
+            caption: "VanTek product photo 1",
+          },
+          {
+            url: "/window-photos/30e5f61d3e05.jpg",
+            caption: "VanTek product photo 2",
+          },
+          {
+            url: "/window-photos/0bda30aff67b.jpg",
+            caption: "VanTek product photo 3",
+          },
+          {
+            url: "/window-photos/d0b407fbcd10.jpg",
+            caption: "VanTek product photo 5",
+          },
+          {
+            url: "/window-photos/d288e06160d0.jpg",
+            caption: "VanTek product photo 6",
+          },
+        ],
       },
     ],
   },
@@ -370,36 +677,6 @@ export const STEPS: Step[] = [
         brand: "victron",
         note: "Everything above plus a touchscreen showing solar, battery, and power at a glance.",
         price: 980,
-        recommendation: "upgrade",
-      },
-    ],
-  },
-  {
-    id: "panel",
-    jennyChoice: false,
-    label: "Control Panel",
-    section: "Power System",
-    question: "What control panel setup do you want?",
-    callout:
-      "We recommend the labeled switch panel. It gives you a clear on/off switch for every circuit - fan, AC, lights - all labeled on the wall.",
-    context:
-      "This is where you control everything in the van day-to-day.",
-    options: [
-      {
-        label: "Basic fuse block - no panel",
-        note: "Hidden fuses. No labeled switches. Everything runs all the time.",
-        price: 80,
-      },
-      {
-        label: "Blue Sea 6-circuit labeled switches",
-        note: "Six labeled backlit rocker switches on the wall. Clean and easy for daily use.",
-        price: 180,
-        recommendation: "pick",
-      },
-      {
-        label: "Blue Sea 12-circuit full panel",
-        note: "A labeled switch for every single circuit in the van.",
-        price: 260,
         recommendation: "upgrade",
       },
     ],
