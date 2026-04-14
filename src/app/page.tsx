@@ -38,6 +38,13 @@ function formatMoney(value: number) {
   return `$${value.toLocaleString()}`;
 }
 
+function recommendationTag(rec?: "pick" | "value" | "upgrade") {
+  if (rec === "pick") return { className: "tag-rec", label: "Our pick" };
+  if (rec === "value") return { className: "tag-value", label: "Best value" };
+  if (rec === "upgrade") return { className: "tag-upgrade", label: "Upgrade" };
+  return null;
+}
+
 function getTotal(selections: Selections) {
   return STEPS.reduce((sum, step) => {
     const selected = selections[step.id];
@@ -100,6 +107,7 @@ export default function Home() {
   const [planName, setPlanName] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [skipWarnByStep, setSkipWarnByStep] = useState<Record<string, boolean>>({});
 
   const current = STEPS[currentStep];
   const runningTotal = useMemo(() => getTotal(selections), [selections]);
@@ -149,6 +157,7 @@ export default function Home() {
   }, [savedPlans, sessionCode]);
 
   function selectOption(stepId: string, idx: number) {
+    setSkipWarnByStep((prev) => ({ ...prev, [stepId]: false }));
     setSelections((prev) => {
       const currentSelection = prev[stepId];
       if (currentSelection && currentSelection.idx === idx) {
@@ -209,6 +218,7 @@ export default function Home() {
     setSelections(next);
     setCurrentStep(0);
     setView("summary");
+    setSkipWarnByStep({});
     setSaveMessage(`${mode === "low" ? "Low-end" : "High-end"} baseline loaded.`);
   }
 
@@ -271,7 +281,22 @@ export default function Home() {
     setSelections({});
     setCurrentStep(0);
     setView("builder");
+    setSkipWarnByStep({});
     setSaveMessage("");
+  }
+
+  function handleSkip() {
+    const step = STEPS[currentStep];
+    const selected = selections[step.id];
+    const shouldWarn = step.critical && !selected && !skipWarnByStep[step.id];
+
+    if (shouldWarn) {
+      setSkipWarnByStep((prev) => ({ ...prev, [step.id]: true }));
+      return;
+    }
+
+    setSkipWarnByStep((prev) => ({ ...prev, [step.id]: false }));
+    setCurrentStep((prev) => Math.min(STEPS.length - 1, prev + 1));
   }
 
   const grouped = useMemo(() => {
@@ -329,7 +354,10 @@ export default function Home() {
               <span>
                 Step {currentStep + 1} of {STEPS.length}
               </span>
-              <span>{current.section}</span>
+              <span>
+                {current.jennyChoice ? "" : "Rapp handles - "}
+                {current.section} - {current.label}
+              </span>
             </div>
           </div>
 
@@ -337,29 +365,39 @@ export default function Home() {
             <section className="step active">
               <div className="step-badge">
                 {current.jennyChoice
-                  ? current.section
-                  : "Rapp handles this - shown for budget planning"}
+                  ? `${current.section} - ${current.label}`
+                  : `Rapp handles - ${current.section} - ${current.label}`}
               </div>
               <h1 className="step-question">{current.question}</h1>
+              <div className="rec-callout">
+                <strong>Our recommendation:</strong> {current.callout}
+              </div>
               <p className="step-context">{current.context}</p>
+              {current.critical && skipWarnByStep[current.id] && (
+                <div className="skip-warn visible">
+                  <strong>This is important to decide.</strong> Skipping means we&apos;ll need
+                  to revisit it before ordering. Tap Skip again to continue anyway.
+                </div>
+              )}
 
               <div className="options-grid">
                 {current.options.map((option, idx) => {
                   const selected = selections[current.id];
                   const isSelected = selected?.idx === idx;
                   const phase = selected?.phase ?? 0;
+                  const recTag = recommendationTag(option.recommendation);
 
                   return (
                     <div
                       key={`${current.id}-${option.label}`}
-                      className={`opt-card ${isSelected ? `selected-p${phase}` : ""} ${option.recommended ? "is-rec" : ""}`}
+                      className={`opt-card ${isSelected ? `selected-p${phase}` : ""} ${option.recommendation === "pick" ? "is-rec" : ""}`}
                       onClick={() => selectOption(current.id, idx)}
                     >
                       <div className="opt-tags">
                         {option.brand && (
                           <span className={`tag t-${option.brand}`}>{BRANDS[option.brand]}</span>
                         )}
-                        {option.recommended && <span className="tag tag-rec">Our pick</span>}
+                        {recTag && <span className={`tag ${recTag.className}`}>{recTag.label}</span>}
                       </div>
 
                       <div className="opt-card-top">
@@ -380,10 +418,10 @@ export default function Home() {
                               onClick={() => setPhase(current.id, phaseOption)}
                             >
                               {phaseOption === 1
-                                ? "Phase 1 - Build now"
+                                ? "Now"
                                 : phaseOption === 2
-                                  ? "Phase 2 - 6 months"
-                                  : "Phase 3 - 1 year"}
+                                  ? "6 months"
+                                  : "1 year"}
                             </button>
                           ))}
                           <button
@@ -391,7 +429,7 @@ export default function Home() {
                             className="ph-desel"
                             onClick={() => clearStep(current.id)}
                           >
-                            Deselect
+                            x
                           </button>
                         </div>
                       )}
@@ -406,7 +444,10 @@ export default function Home() {
             <button
               className="btn-back"
               type="button"
-              onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+              onClick={() => {
+                setSkipWarnByStep((prev) => ({ ...prev, [current.id]: false }));
+                setCurrentStep((prev) => Math.max(0, prev - 1));
+              }}
               disabled={currentStep === 0}
             >
               Back
@@ -419,6 +460,7 @@ export default function Home() {
                   setView("summary");
                   return;
                 }
+                setSkipWarnByStep((prev) => ({ ...prev, [current.id]: false }));
                 setCurrentStep((prev) => prev + 1);
               }}
             >
@@ -427,7 +469,8 @@ export default function Home() {
             <button
               className="btn-skip"
               type="button"
-              onClick={() => setCurrentStep((prev) => Math.min(STEPS.length - 1, prev + 1))}
+              onClick={handleSkip}
+              style={{ display: selections[current.id] ? "none" : undefined }}
             >
               Skip
             </button>
@@ -452,6 +495,27 @@ export default function Home() {
               </button>
             </div>
 
+            <div className="rec-build">
+              <h3>Your Build Plan</h3>
+              {Object.entries(selections).map(([stepId, selected]) => {
+                const step = STEPS.find((item) => item.id === stepId);
+                if (!step) return null;
+                const option = step.options[selected.idx];
+
+                return (
+                  <div className="rec-row" key={`rb-${stepId}`}>
+                    <span className={`rc ${step.jennyChoice ? "rc-jenny" : "rc-rapp"}`}>
+                      {step.jennyChoice ? "Your choice" : "Rapp handles"}
+                    </span>
+                    <span className="rl">
+                      {step.label} - {option.label}
+                    </span>
+                    <span className="rp">{formatMoney(option.price)}</span>
+                  </div>
+                );
+              })}
+            </div>
+
             {[1, 2, 3].map((phase) => (
               <div className="phase-block" key={`phase-${phase}`}>
                 <div className={`phase-block-title ph${phase}-title`}>
@@ -466,7 +530,9 @@ export default function Home() {
                   return (
                     <div className="summary-row" key={`${phase}-${step.id}`}>
                       <div>
-                        <div className="summary-cat">{step.section}</div>
+                        <div className="summary-cat">
+                          {step.jennyChoice ? "Your choice" : "Rapp handles"} - {step.label}
+                        </div>
                         <div className="summary-sel">{option.label}</div>
                       </div>
                       <div className="summary-price">${option.price.toLocaleString()}</div>
@@ -482,7 +548,13 @@ export default function Home() {
                 const step = STEPS.find((s) => s.id === item.stepId);
                 return (
                   <div className="summary-row" key={`u-${item.stepId}`}>
-                    <div className="summary-sel">{step?.question}</div>
+                    <div>
+                      <div className="summary-cat">
+                        {step?.jennyChoice ? "Your choice" : "Rapp handles"} - {step?.label}
+                      </div>
+                      <div className="summary-sel">Not selected</div>
+                      {step?.critical && <div className="sum-critical">Discuss with Rapp</div>}
+                    </div>
                   </div>
                 );
               })}

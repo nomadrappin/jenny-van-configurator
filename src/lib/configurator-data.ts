@@ -14,15 +14,18 @@ export type Option = {
   note: string;
   price: number;
   brand?: BrandKey;
-  recommended?: boolean;
+  recommendation?: "pick" | "value" | "upgrade";
 };
 
 export type Step = {
   id: string;
   jennyChoice: boolean;
+  label: string;
   section: string;
   question: string;
+  callout: string;
   context: string;
+  critical?: boolean;
   options: Option[];
 };
 
@@ -45,131 +48,119 @@ export const STEPS: Step[] = [
   {
     id: "heat",
     jennyChoice: true,
-    section: "Your Comfort",
-    question: "How quiet does the heater need to be?",
+    label: "Heating",
+    section: "Your Experience",
+    critical: true,
+    question: "Which heater do you want?",
+    callout:
+      "For a counseling van, we recommend the Espar. It runs nearly silent - a client sitting across from you won't notice it.",
     context:
-      "The van runs on diesel from its own fuel tank - no propane, no propane smell, no generator. This is what keeps you warm for 9 months of the year in Oregon and Washington.",
+      "Runs off the van's own diesel tank. No propane, no generator. This is what keeps you warm for 9 months a year in Oregon and Washington.",
     options: [
       {
-        label: "Webasto - reliable workhorse",
+        label: "Webasto Air Top 2000",
         brand: "webasto",
-        note: "A proven heater used in vans worldwide. Warm and reliable in any weather.",
+        note: "The industry standard. Proven, well-supported, warm. The safe dependable choice.",
         price: 1350,
+        recommendation: "value",
       },
       {
-        label: "Espar - near silent",
+        label: "Espar Airtronic - near silent",
         brand: "espar",
-        note: "So quiet a client sitting across from you won't notice it's running. Our pick for a counseling space.",
+        note: "Brushless motor runs up to 90% quieter than Webasto. The right heater for a counseling space.",
         price: 1600,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "Webasto - high output",
-        brand: "webasto",
-        note: "Twice the heating power. Good for very cold working locations.",
-        price: 2100,
-      },
-      {
-        label: "Espar - high output, near silent",
+        label: "Espar - high output + near silent",
         brand: "espar",
-        note: "Maximum heat with almost no noise. The best of both.",
+        note: "Twice the heat with the same near-silent brushless motor. Best for very cold locations.",
         price: 2200,
-      },
-      {
-        label: "Espar - high output + extra quiet",
-        brand: "espar",
-        note: "Same powerful Espar with an added muffler for the absolute lowest noise.",
-        price: 2350,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "ac",
     jennyChoice: true,
-    section: "Your Comfort",
-    question: "What kind of air conditioning works for you?",
+    label: "Air Conditioning",
+    section: "Your Experience",
+    critical: true,
+    question: "Which AC unit do you want?",
+    callout:
+      "For your budget and Pacific Northwest use, Velit is the right starting point. If you want the most proven option money can buy, step up to Dometic.",
     context:
-      "You mentioned using it 4-6 hours on summer days east of the Cascades. All the battery-powered options run off the van's own batteries - no plugging in required.",
+      "All battery-powered options run off the van's batteries - no plugging in required. The heater handles all heating separately.",
     options: [
       {
-        label: "Standard rooftop - needs power hookup",
-        note: "Lower upfront cost. Works great whenever you're parked somewhere with an outlet.",
-        price: 720,
-      },
-      {
-        label: "Velit - runs off the van battery",
-        note: "Cool the van without plugging in anywhere. Has an airflow-only mode for lighter days. Best value for your use.",
+        label: "Velit 2000R - 12V battery powered",
+        note: "Best value 12V rooftop AC. Easiest install. Has a fan-only mode for mild days. Right-sized for your use.",
         price: 1829,
-        recommended: true,
+        recommendation: "value",
       },
       {
-        label: "Dometic - most field-tested",
+        label: "Dometic RTX 2000 - 12V battery powered",
         brand: "dometic",
-        note: "The most proven battery-powered AC available. Longest runtime per charge of any competitor.",
+        note: "Most proven premium 12V rooftop AC. 10+ years of field use. Best choice if you want the safest established option.",
         price: 2700,
+        recommendation: "pick",
       },
       {
-        label: "Mabru - most powerful + quietest",
+        label: "Mabru 12000 - 12V battery powered",
         brand: "mabru",
-        note: "The quietest AC unit made. Nearly double the cooling power. Best for regular summer use east of the Cascades.",
+        note: "Best for hotter climates. Among the quietest and most powerful 12V options available. Best if you work regularly east of the Cascades in summer.",
         price: 2599,
-      },
-      {
-        label: "Nomadic Cooling - battery powered",
-        note: "Runs off battery with an airflow-only mode option.",
-        price: 3100,
+        recommendation: "upgrade",
       },
       {
         label: "Cruise N Comfort - split system",
-        note: "The compressor lives outside the van entirely. Zero mechanical noise inside during sessions. The premium option.",
+        note: "The compressor mounts outside the van entirely. Zero mechanical noise inside during sessions. The quietest possible path.",
         price: 3800,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "fan",
     jennyChoice: true,
-    section: "Your Comfort",
-    question: "How quiet does the roof fan need to be?",
+    label: "Roof Fan",
+    section: "Your Experience",
+    question: "Which roof fan do you want?",
+    callout:
+      "We recommend the AirPlus. It's the quietest fan available and the brushless motor means it will never develop a rattle over time.",
     context:
-      "The fan runs year-round in the Pacific Northwest for fresh air and moisture control - even in winter. It matters that it can close automatically when it rains.",
+      "Runs year-round in the Pacific Northwest for fresh air and moisture control. Closes automatically when it rains.",
     options: [
       {
-        label: "MaxxAir - standard",
-        note: "Reliable and simple. Opens, closes, moves air.",
-        price: 220,
-      },
-      {
         label: "MaxxAir 6200K - 10 speed",
-        note: "Very quiet on its lowest settings. Can run while it's raining without closing. Best value.",
+        note: "Solid and quiet at low settings. Can run in rain without closing. Best value option.",
         price: 275,
-        recommended: true,
+        recommendation: "value",
       },
       {
         label: "Fantastic Fan 7350 - 14 speed",
-        note: "14 speeds so you can turn it down almost silent. Closes automatically when it rains.",
+        note: "14 speeds for precise quiet control. Closes automatically in rain.",
         price: 330,
       },
       {
-        label: "AirPlus Deluxe - brushless motor",
-        note: "The quietest fan available. Stays silent even as it ages - no rattle, ever. Has a built-in blackout shade. Closes in rain.",
+        label: "AirPlus Deluxe - brushless",
+        note: "Quietest fan available. Brushless motor stays silent even as it ages. Built-in blackout shade. Closes in rain.",
         price: 360,
-        recommended: true,
-      },
-      {
-        label: "Dual fan setup",
-        note: "One fan silently exhausting, one pulling fresh air in. Maximum airflow without running the AC.",
-        price: 780,
+        recommendation: "pick",
       },
     ],
   },
   {
     id: "net",
     jennyChoice: true,
+    label: "Internet",
     section: "Staying Connected",
-    question: "How reliable does your internet need to be?",
+    critical: true,
+    question: "How do you want to handle internet?",
+    callout:
+      "For rural Oregon and Washington counseling work, we recommend Starlink. Cell coverage fails in many of those areas - Starlink works everywhere.",
     context:
-      "You're doing counseling in rural Oregon and Washington. Cell coverage is unreliable or nonexistent in many of those areas. This is your connection to clients and video sessions.",
+      "You'll be doing video sessions in areas where cell coverage is often nonexistent. Your internet is your connection to clients.",
     options: [
       {
         label: "Cell signal booster",
@@ -177,196 +168,172 @@ export const STEPS: Step[] = [
         price: 500,
       },
       {
-        label: "Starlink - set up at each location",
+        label: "Starlink - portable tripod setup",
         brand: "starlink",
-        note: "True satellite internet. Set up in 30 seconds wherever you park. Works in areas with zero cell coverage. $120/month.",
+        note: "Set up in 30 seconds wherever you park. True satellite coverage in rural areas with no cell signal. $120/month.",
         price: 650,
-        recommended: true,
+        recommendation: "value",
       },
       {
-        label: "Starlink - always mounted, always ready",
+        label: "Starlink - always mounted on roof",
         brand: "starlink",
-        note: "Permanently on the roof. Connects the moment you park - no setup at all.",
+        note: "Permanently mounted. Connects the moment you park - zero setup ever.",
         price: 820,
-        recommended: true,
-      },
-      {
-        label: "Starlink - works while driving",
-        brand: "starlink",
-        note: "Stays connected even while moving. Most capable option.",
-        price: 2700,
+        recommendation: "pick",
       },
     ],
   },
   {
     id: "safe",
     jennyChoice: true,
+    label: "Safety + Air Quality",
     section: "Staying Connected",
-    question: "What safety monitoring do you want?",
+    question: "What safety setup do you want?",
+    callout:
+      "At minimum, get the CO2 monitor. Air quality degrades quickly with two people in a sealed van and affects focus before you notice it.",
     context:
-      "You'll often be working alone in a sealed van in remote areas. The air quality monitor is the one most people don't think about - CO2 builds up gradually in a small sealed space and affects focus before anyone notices.",
+      "You'll often be working alone in a sealed space in remote areas.",
     options: [
       {
-        label: "Basic detectors",
-        note: "Carbon monoxide and smoke. Required with the diesel heater.",
+        label: "CO + smoke detectors",
+        note: "Required with the diesel heater. Basic protection.",
         price: 50,
       },
       {
         label: "Detectors + air quality monitor",
-        note: "Adds a live readout of air quality. Important for working in a sealed space with a client over long sessions.",
+        note: "Adds a live air quality readout. Important for long sessions in a sealed space with a client.",
         price: 90,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "Full safety suite",
-        note: "Detectors, air quality monitor, and a fire extinguisher.",
-        price: 170,
-      },
-      {
-        label: "Full suite + first aid kit",
-        note: "Everything above plus a first aid kit and roadside emergency supplies for solo work in remote areas.",
+        label: "Full safety suite + first aid",
+        note: "Everything above plus a fire extinguisher, first aid kit, and roadside emergency kit for solo remote work.",
         price: 370,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "win",
     jennyChoice: true,
-    section: "Windows",
-    question: "How much natural light do you want?",
+    label: "Side Windows",
+    section: "Staying Connected",
+    question: "Which sliding windows do you want?",
+    callout:
+      "AM Auto is our starting recommendation - most popular in van builds, screen included, proven fit. Step up to VWD for a cleaner all-glass look.",
     context:
-      "Options 1-4 add 2 windows - one per side. Options 5 and 6 add rear quarter windows too for a fully windowed van.",
+      "Full-sized sliders cut into each side of the van. Confirmed fit for your 2025 Sprinter 170 high roof. All slide open for ventilation.",
     options: [
       {
-        label: "2 windows - standard tinted",
-        note: "One per side. Good light and air.",
-        price: 300,
-      },
-      {
-        label: "2 windows - factory-style fit",
-        note: "Looks like it came from the factory. Tinted with a bug screen.",
+        label: "AM Auto - slider with built-in screen",
+        note: "Most popular van build window. Tinted glass, slides open, integrated bug screen. Best value - screen already included.",
         price: 480,
+        recommendation: "value",
       },
       {
-        label: "2 windows - all-glass modern look",
-        note: "Clean frameless appearance. Tinted with screen. Our recommendation.",
-        price: 580,
-        recommended: true,
+        label: "VWD SE-Series - frameless all-glass",
+        note: "Upgrade option. Cleaner frameless look from the outside. Same tinted glass and integrated screen.",
+        price: 960,
+        recommendation: "upgrade",
       },
       {
-        label: "2 side + 2 rear awning windows",
-        note: "Adds rear windows that ventilate even in light rain.",
-        price: 980,
+        label: "Vantek 2024 Upgraded - slider with screen",
+        note: "European glass from a 16-year specialist. Larger opening, clean exterior seal, integrated screen.",
+        price: 1250,
       },
       {
-        label: "4 windows - full van",
-        note: "Windows on both sides and the rear quarters.",
-        price: 1160,
-      },
-      {
-        label: "4 windows - premium European",
-        note: "The best windows available - superior seals and hardware built to last.",
-        price: 1800,
+        label: "Vantek OEM Flush - with screen",
+        note: "The slider sits completely flush with the outer glass. Looks exactly like a factory window.",
+        price: 1850,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "bat",
     jennyChoice: false,
+    label: "Battery Bank",
     section: "Power System",
-    question: "How long do you need to run everything without plugging in?",
+    critical: true,
+    question: "How much battery capacity do you need?",
+    callout:
+      "For your 4-6 hour AC use case, we recommend 600Ah. That handles a full day of AC, internet, and laptop without ever plugging in.",
     context:
-      "This is what determines how many hours you can run the AC, keep the internet going, and charge your laptop - all without finding an outlet.",
+      "This determines how many hours you can run the AC, keep the internet going, and charge your laptop - all without finding an outlet.",
     options: [
       {
         label: "400Ah - covers a few hours",
-        note: "Enough for a few hours of AC plus regular daily use.",
+        note: "Handles a few hours of AC plus daily use.",
         price: 900,
       },
       {
         label: "600Ah - right-sized for this build",
-        note: "Handles a full day of AC, internet, and your laptop without ever needing to plug in.",
+        note: "Full day of AC, internet, and laptop without plugging in. The right call for your use.",
         price: 1600,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "800Ah - maximum capacity",
+        label: "800Ah - maximum",
         note: "Best for full summer days east of the Cascades when the AC runs all day.",
         price: 1800,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "inv",
     jennyChoice: false,
+    label: "Outlets + Inverter",
     section: "Power System",
-    question: "What do you need to plug in?",
+    question: "How do you want to power your laptop and outlets?",
+    callout:
+      "Everything else in the van runs on 12V and bypasses the inverter. This is just for your laptop and whatever else you plug into a standard outlet.",
     context:
-      "Everything else in the van (the AC, heater, fan, lights) runs on the van's battery directly. This is just for your laptop and anything you plug into a standard outlet.",
+      "The Victron Phoenix is completely silent - no fan at any load. The Xantrex matches our existing RV fleet and switches to shore power automatically.",
     options: [
       {
         label: "No standard outlets",
-        note: "Laptop charges from a 12V car adapter. Simplest and quietest.",
+        note: "Laptop charges via a 12V car adapter. Simplest and quietest setup.",
         price: 0,
       },
       {
-        label: "Xantrex 1000W - right-sized",
+        label: "Xantrex Freedom X 1000W",
         brand: "xantrex",
-        note: "Handles a laptop and a few devices. Automatically switches to wall power when available. Same brand as the Hitch Up AZ RV fleet.",
+        note: "Same brand as our RV fleet. Laptop and devices. Automatically switches to shore power when available.",
         price: 320,
-        recommended: true,
+        recommendation: "value",
       },
       {
-        label: "Victron Phoenix - completely silent",
+        label: "Victron Phoenix 800W - fanless",
         brand: "victron",
-        note: "Zero noise at any load, ever. Best if silence during sessions is the priority.",
+        note: "Completely silent at any load. No fan, ever. Best choice if quiet during sessions is the priority.",
         price: 260,
-        recommended: true,
-      },
-      {
-        label: "Xantrex 2000W - more headroom",
-        brand: "xantrex",
-        note: "More capacity for multiple devices at once.",
-        price: 480,
-      },
-      {
-        label: "Xantrex XC 2000 - with battery charging",
-        brand: "xantrex",
-        note: "Inverter plus the ability to recharge the batteries from a wall outlet.",
-        price: 700,
-      },
-      {
-        label: "Victron MultiPlus - full system",
-        brand: "victron",
-        note: "Powers outlets and charges batteries from a wall outlet or generator.",
-        price: 800,
+        recommendation: "pick",
       },
     ],
   },
   {
     id: "solar",
     jennyChoice: false,
+    label: "Solar",
     section: "Power System",
-    question: "How self-sufficient do you want to be between sessions?",
+    question: "What solar setup do you want?",
+    callout:
+      "We recommend pre-wiring now and adding panels in Phase 2. That keeps the Phase 1 cost down while leaving the door wide open.",
     context:
-      "Solar panels on the roof recharge the batteries while you're parked. On a good sunny day in eastern Oregon, two panels can recover most of a full day of AC use.",
+      "Solar panels recharge the batteries while you're parked. Two 200W panels can recover most of a full day of AC use on a good sunny day.",
     options: [
       {
         label: "Pre-wire only - panels added later",
         note: "We run all the wiring now so panels can be added any time with zero extra labor.",
         price: 120,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "One panel - tops up on sunny days",
-        note: "Good for light daily loads and phones.",
-        price: 280,
-      },
-      {
-        label: "Two panels - covers daily use including AC",
-        note: "Recovers most of a full day of AC use in summer sun. Our pick.",
+        label: "2x 200W panels - covers AC days",
+        note: "Recovers most of a full day of AC in summer sun. Full self-sufficiency on sunny days.",
         price: 750,
-        recommended: true,
+        recommendation: "upgrade",
       },
       {
         label: "Maximum - near self-sufficient",
@@ -376,105 +343,114 @@ export const STEPS: Step[] = [
     ],
   },
   {
-    id: "shore",
+    id: "charge",
     jennyChoice: false,
+    label: "Charging",
     section: "Power System",
-    question: "How do you want the batteries recharged?",
+    question: "How should we set up charging?",
+    callout:
+      "The premium Victron setup is the right call - silent, smart, and it gives you a live battery percentage at all times.",
     context:
-      "The batteries charge from three sources: driving, solar, and plugging into a wall. This covers the driving charger and the wall hookup. Note: this is separate from the outlet inverter above.",
+      "The van charges from three sources: driving, solar, and plugging into a wall outlet. This is separate from the inverter above.",
     options: [
       {
-        label: "Standard - shore power + driving charge",
-        note: "Charges when you plug in and while you drive. Gets the job done.",
+        label: "Standard - shore power + driving",
+        note: "Charges from a wall outlet and while driving.",
         price: 320,
       },
       {
-        label: "Premium - silent driving charger + shore",
+        label: "Premium - Victron silent charger + shore",
         brand: "victron",
-        note: "Upgraded alternator charger with no fan noise. Charges faster from both driving and shore power. Our recommendation.",
+        note: "Fanless alternator charger with live battery percentage display. Faster charging, no noise.",
         price: 520,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "Premium + battery percentage display",
+        label: "Premium + full monitoring screen",
         brand: "victron",
-        note: "Everything above plus a display showing your exact battery level at all times.",
-        price: 660,
+        note: "Everything above plus a touchscreen showing solar, battery, and power at a glance.",
+        price: 980,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "panel",
     jennyChoice: false,
+    label: "Control Panel",
     section: "Power System",
-    question: "How do you want to control everything?",
+    question: "What control panel setup do you want?",
+    callout:
+      "We recommend the labeled switch panel. It gives you a clear on/off switch for every circuit - fan, AC, lights - all labeled on the wall.",
     context:
-      "This is the panel on the wall where you turn things on and off. The labeled switch panel means you can clearly see and control every circuit - fan, AC, lights - without guessing.",
+      "This is where you control everything in the van day-to-day.",
     options: [
       {
-        label: "Basic fuse block",
-        note: "Hidden fuses with no switches. Everything runs all the time.",
+        label: "Basic fuse block - no panel",
+        note: "Hidden fuses. No labeled switches. Everything runs all the time.",
         price: 80,
       },
       {
-        label: "Blue Sea - labeled switches",
-        note: "Six labeled rocker switches on the wall. Fan, AC, lights - each has its own clearly labeled switch. Clean and easy to use daily.",
+        label: "Blue Sea 6-circuit labeled switches",
+        note: "Six labeled backlit rocker switches on the wall. Clean and easy for daily use.",
         price: 180,
-        recommended: true,
+        recommendation: "pick",
       },
       {
-        label: "Blue Sea - full control panel",
-        note: "A switch for every circuit. The most complete setup for a professional daily-use vehicle.",
+        label: "Blue Sea 12-circuit full panel",
+        note: "A labeled switch for every single circuit in the van.",
         price: 260,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "dead",
     jennyChoice: false,
+    label: "Sound Deadening",
     section: "Acoustic Foundation",
     question: "How thorough should the soundproofing be?",
+    callout:
+      "For a counseling van in the Pacific Northwest, we recommend the full van with the double roof layer. Rain on an unlined van roof is extremely loud.",
     context:
-      "This is the first layer installed on bare metal - before anything else. It converts vibration into silence. The roof matters especially in Oregon and Washington where it rains constantly.",
+      "Applied to bare metal first - before anything else. Converts panel vibration into silence. The roof panel matters most in Oregon and Washington rain.",
     options: [
       {
-        label: "Floor and wheel wells only",
-        note: "The loudest panels covered. Minimum coverage.",
-        price: 380,
-      },
-      {
-        label: "Full van - Hushmat everywhere",
+        label: "Full van - Hushmat",
         note: "Every accessible panel. The van goes from a resonating tin box to something solid and quiet.",
         price: 680,
-        recommended: true,
+        recommendation: "pick",
       },
       {
         label: "Full van + double layer on roof",
-        note: "Everything above, plus a second layer on the roof specifically. Rain on an unlined van roof is extremely loud.",
+        note: "Everything above plus a second layer specifically on the roof. Rain becomes nearly inaudible inside.",
         price: 820,
-        recommended: true,
+        recommendation: "upgrade",
       },
     ],
   },
   {
     id: "ins",
     jennyChoice: false,
+    label: "Insulation",
     section: "Acoustic Foundation",
-    question: "How thoroughly should we insulate?",
+    question: "How much insulation coverage do you want?",
+    callout:
+      "Closed-cell spray foam is the right call for the Pacific Northwest. It fills every gap and creates a complete moisture barrier - prevents hidden rust from condensation.",
     context:
-      "Closed-cell spray foam fills every gap and crack and creates a complete moisture barrier - critical in the Pacific Northwest where condensation causes hidden rust over time. Rapp applies it in careful layers.",
+      "Goes over the sound deadening layer. More coverage means better warmth, better quiet, and no condensation issues.",
     options: [
       {
         label: "Spray foam - standard coverage",
-        note: "Every gap and void filled. Complete moisture barrier throughout.",
+        note: "Every gap and void filled. Complete moisture barrier. Right choice for PNW.",
         price: 480,
-        recommended: true,
+        recommendation: "pick",
       },
       {
         label: "Spray foam - maximum thickness",
         note: "Multiple passes to maximize depth everywhere. Best possible thermal and sound performance.",
         price: 680,
-        recommended: true,
+        recommendation: "upgrade",
       },
     ],
   },
